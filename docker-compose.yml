@@ -1,0 +1,146 @@
+version: '3.8'
+
+services:
+  front-end:
+    image: weaveworksdemos/front-end:0.3.12
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  edge-router:
+    image: weaveworksdemos/edge-router:0.1.1
+    ports:
+      - '80:80'
+      - '8080:8080'
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  catalogue:
+    image: weaveworksdemos/catalogue:0.3.5
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  catalogue-db:
+    image: weaveworksdemos/catalogue-db:0.3.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=socksdb
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  carts:
+    image: weaveworksdemos/carts:0.4.8
+    environment:
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  carts-db:
+    image: mongo:3.4
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  orders:
+    image: weaveworksdemos/orders:0.4.7
+    environment:
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  orders-db:
+    image: mongo:3.4
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  shipping:
+    image: weaveworksdemos/shipping:0.4.8
+    environment:
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom -Dspring.zipkin.enabled=false
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  queue-master:
+    image: weaveworksdemos/queue-master:0.3.1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  rabbitmq:
+    image: rabbitmq:3.6.8
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  payment:
+    image: weaveworksdemos/payment:0.4.3
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  user:
+    image: weaveworksdemos/user:0.4.4
+    environment:
+      - MONGO_HOST=user-db:27017
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  user-db:
+    image: weaveworksdemos/user-db:0.4.0
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+  user-sim:
+    image: weaveworksdemos/load-test:0.1.1
+    command: "-d 60 -r 200 -c 2 -h edge-router"
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - sockshop
+
+networks:
+  sockshop:
+    driver: overlay
+
