@@ -20,7 +20,6 @@
 │   ├── main.tf
 │   └── variables.tf
 ├── docker-compose.yml           # Swarm-совместимый docker-compose
-├── screenshots/                 # Скриншоты интерфейса и команд
 ├── README.md                    # Документация
 ```
 
@@ -31,8 +30,8 @@
 ### 1. Клонируем репозиторий
 
 ```bash
-git clone https://github.com/USERNAME/sockshop-iac-yandex.git
-cd sockshop-iac-yandex
+git clone https://github.com/denpi54/socksshop.git
+cd socksshop
 ```
 
 ### 2. Устанавливаем переменные окружения
@@ -195,13 +194,6 @@ http://<EXTERNAL_IP>
 
 ---
 
-## 📸 Скриншоты
-
-1. `screenshots/browser_view.png` — отображение сайта с адресной строкой
-2. `screenshots/docker_services.png` — вывод `docker service ls`
-3. `screenshots/docker_nodes.png` — вывод `docker node ls`
-
----
 
 ## ✅ Завершение
 

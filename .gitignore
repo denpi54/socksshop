@@ -1,0 +1,6 @@
+.DS_Store
+*.tfstate
+*.tfstate.*
+.terraform/
+key.json
+terraform.tfvars
